@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search Keywords</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    input { padding: 10px; width: 300px; margin-bottom: 20px; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 5px 0; }
+    a { text-decoration: none; color: #007BFF; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h2>Search for a Product</h2>
+  <input type="text" id="search" placeholder="Search by keyword...">
+  <ul id="results"></ul>
+
+  <script src="data.js"></script>
+  <script>
+    const searchInput = document.getElementById("search");
+    const resultsList = document.getElementById("results");
+
+    function renderResults(filteredData) {
+      resultsList.innerHTML = "";
+      filteredData.forEach(item => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${item.link}" target="_blank">${item.keyword}</a>`;
+        resultsList.appendChild(li);
+      });
+    }
+
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = data.filter(item =>
+        item.keyword.toLowerCase().includes(query)
+      );
+      renderResults(filtered);
+    });
+
+    // Show all results on load
+    renderResults(data);
+  </script>
+</body>
+</html>
