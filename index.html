@@ -130,7 +130,7 @@
         let imageHTML = "";
 
         try {
-          const resp = await fetch(`https://a7575542-1638-4b37-affe-490aed12003e-00-32czniitv4t41.spock.replit.dev/get-image?url=${encodeURIComponent(item.link)}`);
+         const resp = await fetch(`https://a7575542-1638-4b37-affe-490aed12003e-00-32czniitv4t41.spock.replit.dev/get-image?url=${encodeURIComponent(item.link)}`);
           const imgData = await resp.json();
           if (imgData.image) {
             imageHTML = `<img src="${imgData.image}" class="product-image">`;
