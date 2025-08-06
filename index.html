@@ -8,59 +8,79 @@
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #f4f6f9;
-      padding: 40px;
-      color: #333;
-    }
-    h2 {
+      padding: 60px;
       color: #222;
-      margin-bottom: 20px;
     }
-    #search {
-      padding: 12px 15px;
-      width: 100%;
-      max-width: 500px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+
+    h1 {
+      font-size: 36px;
       margin-bottom: 30px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      color: #111;
     }
+
+    #search {
+      padding: 20px;
+      width: 100%;
+      max-width: 700px;
+      font-size: 24px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
     ul {
       list-style: none;
       padding: 0;
-      max-width: 600px;
+      max-width: 800px;
     }
+
     li {
       background: #fff;
-      padding: 15px 20px;
-      margin-bottom: 10px;
-      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
+
     li:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
     }
+
     a {
       color: #007BFF;
       text-decoration: none;
-      font-weight: 500;
-      font-size: 17px;
+      font-weight: 600;
     }
+
     a:hover {
       text-decoration: underline;
     }
+
+    mark {
+      background: #fff2ac;
+      padding: 0 2px;
+      border-radius: 3px;
+    }
+
     @media (max-width: 600px) {
       #search {
-        width: 100%;
+        font-size: 18px;
+        padding: 15px;
+      }
+
+      li {
+        font-size: 18px;
       }
     }
   </style>
 </head>
 <body>
-  <h2>🔍 Search for a Product</h2>
-  <input type="text" id="search" placeholder="Start typing a product name...">
+  <h1>🔍 Search Products</h1>
+  <input type="text" id="search" placeholder="Start typing...">
   <ul id="results"></ul>
 
   <script src="data.js"></script>
@@ -70,15 +90,35 @@
 
     const fuse = new Fuse(data, {
       keys: ['keyword'],
-      threshold: 0.4 // Adjust for more/less fuzzy matching
+      threshold: 0.4,
+      includeMatches: true,
+      minMatchCharLength: 2
     });
+
+    function highlightMatch(text, matches) {
+      if (!matches) return text;
+      let offset = 0;
+      matches.forEach(m => {
+        m.indices.forEach(([start, end]) => {
+          start += offset;
+          end += offset;
+          const before = text.slice(0, start);
+          const match = text.slice(start, end + 1);
+          const after = text.slice(end + 1);
+          text = `${before}<mark>${match}</mark>${after}`;
+          offset += "<mark></mark>".length;
+        });
+      });
+      return text;
+    }
 
     function renderResults(results) {
       resultsList.innerHTML = "";
-      results.forEach(result => {
+      results.slice(0, 5).forEach(result => {
         const item = result.item;
+        const matchHTML = highlightMatch(item.keyword, result.matches);
         const li = document.createElement("li");
-        li.innerHTML = `<a href="${item.link}" target="_blank">${item.keyword}</a>`;
+        li.innerHTML = `<a href="${item.link}" target="_blank">${matchHTML}</a>`;
         resultsList.appendChild(li);
       });
     }
@@ -86,14 +126,12 @@
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.trim();
       if (query === "") {
-        renderResults(fuse._docs.map(doc => ({ item: doc })));
+        resultsList.innerHTML = "";
       } else {
         const results = fuse.search(query);
         renderResults(results);
       }
     });
-
-    renderResults(fuse._docs.map(doc => ({ item: doc })));
   </script>
 </body>
 </html>
