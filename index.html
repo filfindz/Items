@@ -1,161 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Search Products</title>
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f6f9;
-      padding: 60px;
-      color: #222;
-    }
-
-    h1 {
-      font-size: 36px;
-      margin-bottom: 30px;
-      color: #111;
-    }
-
-    #search {
-      padding: 20px;
-      width: 100%;
-      max-width: 700px;
-      font-size: 24px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      margin-bottom: 40px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      max-width: 800px;
-    }
-
-    li {
-      background: #fff;
-      padding: 20px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-      font-size: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    li:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-    }
-
-    a {
-      color: #007BFF;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    mark {
-      background: #fff2ac;
-      padding: 0 2px;
-      border-radius: 3px;
-    }
-
-    img.product-image {
-      max-width: 150px;
-      display: block;
-      margin-bottom: 10px;
-      border-radius: 8px;
-    }
-
-    @media (max-width: 600px) {
-      #search {
-        font-size: 18px;
-        padding: 15px;
-      }
-
-      li {
-        font-size: 18px;
-      }
-    }
-  </style>
+  <title>Spreadsheet Data</title>
 </head>
 <body>
-  <h1>🔍 Search Products</h1>
-  <input type="text" id="search" placeholder="Start typing...">
-  <ul id="results"></ul>
+  <h1>Spreadsheet Data</h1>
+  <table id="data-table" border="1"></table>
 
-  <script src="data.js"></script>
   <script>
-    const searchInput = document.getElementById("search");
-    const resultsList = document.getElementById("results");
+    // Your CSV URL from step 2
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/565818090/export?format=csv&id=565818090&gid=565818090';
 
-    const fuse = new Fuse(data, {
-      keys: ['keyword'],
-      threshold: 0.4,
-      includeMatches: true,
-      minMatchCharLength: 2
-    });
+    // Function to parse CSV text into an array of rows
+    function parseCSV(text) {
+      const rows = text.trim().split('\n');
+      return rows.map(row => row.split(','));
+    }
 
-    function highlightMatch(text, matches) {
-      if (!matches) return text;
-      let offset = 0;
-      matches.forEach(m => {
-        m.indices.forEach(([start, end]) => {
-          start += offset;
-          end += offset;
-          const before = text.slice(0, start);
-          const match = text.slice(start, end + 1);
-          const after = text.slice(end + 1);
-          text = `${before}<mark>${match}</mark>${after}`;
-          offset += "<mark></mark>".length;
+    fetch(csvUrl)
+      .then(response => response.text())
+      .then(csvText => {
+        const data = parseCSV(csvText);
+        const table = document.getElementById('data-table');
+
+        // Create table header
+        const headerRow = document.createElement('tr');
+        data[0].forEach(header => {
+          const th = document.createElement('th');
+          th.textContent = header;
+          headerRow.appendChild(th);
         });
+        table.appendChild(headerRow);
+
+        // Create table rows
+        data.slice(1).forEach(row => {
+          const tr = document.createElement('tr');
+          row.forEach(cell => {
+            const td = document.createElement('td');
+            td.textContent = cell;
+            tr.appendChild(td);
+          });
+          table.appendChild(tr);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading CSV:', err);
       });
-      return text;
-    }
-
-    async function renderResults(results) {
-      resultsList.innerHTML = "";
-
-      for (const result of results.slice(0, 5)) {
-        const item = result.item;
-        const matchHTML = highlightMatch(item.keyword, result.matches);
-        const li = document.createElement("li");
-
-        let imageHTML = "";
-
-        try {
-         const resp = await fetch(`https://a7575542-1638-4b37-affe-490aed12003e-00-32czniitv4t41.spock.replit.dev/get-image?url=${encodeURIComponent(item.link)}`);
-          const imgData = await resp.json();
-          if (imgData.image) {
-            imageHTML = `<img src="${imgData.image}" class="product-image">`;
-          }
-        } catch (e) {
-          console.warn("Image fetch failed:", e);
-        }
-
-        li.innerHTML = `
-          ${imageHTML}
-          <a href="${item.link}" target="_blank">${matchHTML}</a>
-        `;
-        resultsList.appendChild(li);
-      }
-    }
-
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.trim();
-      if (query === "") {
-        resultsList.innerHTML = "";
-      } else {
-        const results = fuse.search(query);
-        renderResults(results);
-      }
-    });
   </script>
 </body>
 </html>
