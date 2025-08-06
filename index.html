@@ -66,6 +66,13 @@
       border-radius: 3px;
     }
 
+    img.product-image {
+      max-width: 150px;
+      display: block;
+      margin-bottom: 10px;
+      border-radius: 8px;
+    }
+
     @media (max-width: 600px) {
       #search {
         font-size: 18px;
@@ -112,15 +119,32 @@
       return text;
     }
 
-    function renderResults(results) {
+    async function renderResults(results) {
       resultsList.innerHTML = "";
-      results.slice(0, 5).forEach(result => {
+
+      for (const result of results.slice(0, 5)) {
         const item = result.item;
         const matchHTML = highlightMatch(item.keyword, result.matches);
         const li = document.createElement("li");
-        li.innerHTML = `<a href="${item.link}" target="_blank">${matchHTML}</a>`;
+
+        let imageHTML = "";
+
+        try {
+          const resp = await fetch(`https://YOUR_SCRAPER_API_URL/get-image?url=${encodeURIComponent(item.link)}`);
+          const imgData = await resp.json();
+          if (imgData.image) {
+            imageHTML = `<img src="${imgData.image}" class="product-image">`;
+          }
+        } catch (e) {
+          console.warn("Image fetch failed:", e);
+        }
+
+        li.innerHTML = `
+          ${imageHTML}
+          <a href="${item.link}" target="_blank">${matchHTML}</a>
+        `;
         resultsList.appendChild(li);
-      });
+      }
     }
 
     searchInput.addEventListener("input", () => {
