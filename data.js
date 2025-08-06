@@ -8,15 +8,15 @@ const data = [
   { keyword: "Bapesta low Black and white", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500586056&ref=300320745" },
   { keyword: "Nike Ari Max Plus Utility", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500597638&ref=300320745" },
   { keyword: "VANS trainer", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500521180&ref=300320745" },
-  { keyword: 'Travis scott Xjordan cut the check jumpman jack tr"university', link: "https://joyagoo.com/product/?shop_type=weidian&id=7498684551&ref=300320745" },
+  { keyword: 'Travis Scott x Jordan "Cut the Check"', link: "https://joyagoo.com/product/?shop_type=weidian&id=7498684551&ref=300320745" },
   { keyword: "Nike Air force 107 low", link: "https://joyagoo.com/product/?shop_type=weidian&id=7498713607&ref=300320745" },
   { keyword: "Timberland boots", link: "https://joyagoo.com/product/?shop_type=weidian&id=7498715599&ref=300320745" },
   { keyword: "UGG boots", link: "https://joyagoo.com/product/?shop_type=weidian&id=7498715599&ref=300320745" },
   { keyword: "Birkenstock", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500552840&ref=300320745" },
   { keyword: "Asics gel-kayano 14", link: "https://joyagoo.com/product/?shop_type=weidian&id=7498701963&ref=300320745" },
   { keyword: "Asics GEL-NYC", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500537046&ref=300320745" },
-  { keyword: "Christian louboutin", link: "https://joyagoo.com/product/?shop_type=weidian&id=7498696283&ref=300320745" },
+  { keyword: "Christian Louboutin", link: "https://joyagoo.com/product/?shop_type=weidian&id=7498696283&ref=300320745" },
   { keyword: "Burberry", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500558668&ref=300320745" },
   { keyword: "Dior B22", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500529094&ref=300320745" },
-  { keyword: "nike dunk low panda", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500675708&ref=300320745" }
+  { keyword: "Nike Dunk Low Panda", link: "https://joyagoo.com/product/?shop_type=weidian&id=7500675708&ref=300320745" }
 ];
