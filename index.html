@@ -70,7 +70,7 @@
 
     const fuse = new Fuse(data, {
       keys: ['keyword'],
-      threshold: 0.4
+      threshold: 0.4 // Adjust for more/less fuzzy matching
     });
 
     function renderResults(results) {
