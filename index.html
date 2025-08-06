@@ -1,9 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Search Products</title>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,12 +11,10 @@
       padding: 40px;
       color: #333;
     }
-
     h2 {
       color: #222;
       margin-bottom: 20px;
     }
-
     #search {
       padding: 12px 15px;
       width: 100%;
@@ -27,13 +25,11 @@
       margin-bottom: 30px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-
     ul {
       list-style: none;
       padding: 0;
       max-width: 600px;
     }
-
     li {
       background: #fff;
       padding: 15px 20px;
@@ -42,23 +38,19 @@
       transition: transform 0.2s, box-shadow 0.2s;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
-
     li:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
     a {
       color: #007BFF;
       text-decoration: none;
       font-weight: 500;
       font-size: 17px;
     }
-
     a:hover {
       text-decoration: underline;
     }
-
     @media (max-width: 600px) {
       #search {
         width: 100%;
@@ -76,9 +68,15 @@
     const searchInput = document.getElementById("search");
     const resultsList = document.getElementById("results");
 
-    function renderResults(filteredData) {
+    const fuse = new Fuse(data, {
+      keys: ['keyword'],
+      threshold: 0.4
+    });
+
+    function renderResults(results) {
       resultsList.innerHTML = "";
-      filteredData.forEach(item => {
+      results.forEach(result => {
+        const item = result.item;
         const li = document.createElement("li");
         li.innerHTML = `<a href="${item.link}" target="_blank">${item.keyword}</a>`;
         resultsList.appendChild(li);
@@ -86,14 +84,16 @@
     }
 
     searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      const filtered = data.filter(item =>
-        item.keyword.toLowerCase().includes(query)
-      );
-      renderResults(filtered);
+      const query = searchInput.value.trim();
+      if (query === "") {
+        renderResults(fuse._docs.map(doc => ({ item: doc })));
+      } else {
+        const results = fuse.search(query);
+        renderResults(results);
+      }
     });
 
-    renderResults(data); // Show all on load
+    renderResults(fuse._docs.map(doc => ({ item: doc })));
   </script>
 </body>
 </html>
